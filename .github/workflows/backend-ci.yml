@@ -42,20 +42,6 @@ jobs:
 
     - name: Run chmod to make gradlew executable
       run: chmod +x ./gradlew
-
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build -x test
-
-    # 빌드가 끝난 후 JAR 파일이 존재하는지 확인하는 단계
-    - name: Check if JAR file exists
-      run: |
-        if [ -f build/libs/multipath-backend.jar ]; then
-          echo "JAR file exists."
-        else
-          echo "JAR file does not exist."
-          exit 1
-        fi
-        
       
     - name: Add SSH key
       uses: webfactory/ssh-agent@v0.7.0

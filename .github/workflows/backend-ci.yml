@@ -60,11 +60,21 @@ jobs:
         echo "Retrieving secrets from AWS Parameter Store..."
 
         # SSM Parameter Store에서 DB 관련 값 가져오기
-        DB_URL=$(aws ssm get-parameter --name "/multipath/DB_URL" --query "Parameter.Value" --output text)
-        DB_USERNAME=$(aws ssm get-parameter --name "/multipath/DB_USERNAME" --query "Parameter.Value" --output text)
-        DB_PASSWORD=$(aws ssm get-parameter --name "/multipath/DB_PASSWORD" --with-decryption --query "Parameter.Value" --output text)
-        JWT_SECRET_KEY=$(aws ssm get-parameter --name "/multipath/JWT_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
+        echo "Fetching DB_URL..."
+        DB_URL=$(aws ssm get-parameter --name "/multipath/DB_URL" --query "Parameter.Value" --output text) || { echo "Error retrieving DB_URL" >&2; exit 1; }
+        echo "DB_URL fetched: $DB_URL"
 
+        echo "Fetching DB_USERNAME..."
+        DB_USERNAME=$(aws ssm get-parameter --name "/multipath/DB_USERNAME" --query "Parameter.Value" --output text) || { echo "Error retrieving DB_USERNAME" >&2; exit 1; }
+        echo "DB_USERNAME fetched: $DB_USERNAME"
+
+        echo "Fetching DB_PASSWORD..."
+        DB_PASSWORD=$(aws ssm get-parameter --name "/multipath/DB_PASSWORD" --with-decryption --query "Parameter.Value" --output text) || { echo "Error retrieving DB_PASSWORD" >&2; exit 1; }
+        echo "DB_PASSWORD fetched."
+
+        echo "Fetching JWT_SECRET_KEY..."
+        JWT_SECRET_KEY=$(aws ssm get-parameter --name "/multipath/JWT_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text) || { echo "Error retrieving JWT_SECRET_KEY" >&2; exit 1; }
+        echo "JWT_SECRET_KEY fetched."
 
         echo "DB_URL=$DB_URL" >> $GITHUB_ENV
         echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV

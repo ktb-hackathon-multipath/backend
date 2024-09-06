@@ -57,12 +57,7 @@ jobs:
     # Secrets Manager에서 자격 증명 및 기타 값을 가져오기
     - name: Retrieve secrets from AWS
       run: |
-        echo "Retrieving secrets from AWS Secrets Manager..."
-
-        # Secrets Manager에서 AWS_ACCESS_KEY와 AWS_SECRET_ACCESS_KEY 가져오기
-        SECRETS=$(aws secretsmanager get-secret-value --secret-id ktb-hackathon-multipath --query SecretString --output text)
-        AWS_ACCESS_KEY_ID=$(echo $SECRETS | jq -r '.AWS_ACCESS_KEY')
-        AWS_SECRET_ACCESS_KEY=$(echo $SECRETS | jq -r '.AWS_SECRET_ACCESS_KEY')
+        echo "Retrieving secrets from AWS Parameter Store..."
 
         # SSM Parameter Store에서 DB 관련 값 가져오기
         DB_URL=$(aws ssm get-parameter --name "/multipath/DB_URL" --query "Parameter.Value" --output text)
@@ -70,8 +65,7 @@ jobs:
         DB_PASSWORD=$(aws ssm get-parameter --name "/multipath/DB_PASSWORD" --with-decryption --query "Parameter.Value" --output text)
         JWT_SECRET_KEY=$(aws ssm get-parameter --name "/multipath/JWT_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
 
-        echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> $GITHUB_ENV
-        echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_ENV
+
         echo "DB_URL=$DB_URL" >> $GITHUB_ENV
         echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV
         echo "DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
@@ -80,7 +74,7 @@ jobs:
     # EC2에 애플리케이션 배포
     - name: Deploy to EC2
       env:
-        AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+        AWS_ACCESS_KEY: ${{ env.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
         DB_URL: ${{ env.DB_URL }}
         DB_USERNAME: ${{ env.DB_USERNAME }}

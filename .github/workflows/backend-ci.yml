@@ -47,7 +47,7 @@ jobs:
       run: docker build -t multipath-backend:latest .
 
     - name: Save Docker image as tar
-      run: docker save -o multipath-backend.tar bami-backend:latest
+      run: docker save -o multipath-backend.tar multipath-backend:latest
 
     - name: Upload Docker image tar to S3
       env:

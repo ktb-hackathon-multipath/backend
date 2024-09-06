@@ -53,7 +53,7 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: aws s3 cp multipath.tar s3://ktb-hackathon-multipath-backend-s3/path/to/multipath-backend.tar --region ap-northeast-2
+      run: aws s3 cp multipath-backend.tar s3://ktb-hackathon-multipath-backend-s3/path/to/multipath-backend.tar --region ap-northeast-2
 
     - name: Add SSH key
       uses: webfactory/ssh-agent@v0.7.0

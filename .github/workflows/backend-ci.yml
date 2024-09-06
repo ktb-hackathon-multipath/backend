@@ -68,14 +68,21 @@ jobs:
         DB_PASSWORD=$(aws ssm get-parameter --name "/multipath/DB_PASSWORD" --with-decryption --query "Parameter.Value" --output text)
         JWT_SECRET_KEY=$(aws ssm get-parameter --name "/multipath/JWT_SECRET_KEY" --with-decryption --query "Parameter.Value" --output text)
 
-      # Gradle 빌드 단계에서 환경 변수를 직접 사용
-    - name: Build with Gradle using SSM values
-      run: ./gradlew build -x test \
-        -Dspring.datasource.url=${{ steps.db_url.outputs.db_url }} \
-        -Dspring.datasource.username=${{ steps.db_username.outputs.db_username }} \
-        -Dspring.datasource.password=${{ steps.db_password.outputs.db_password }} \
-        -Djwt.secret=${{ steps.jwt_secret.outputs.jwt_secret }}
+        # Export values as environment variables for the next steps
+        echo "DB_URL=${DB_URL}" >> $GITHUB_ENV
+        echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
+        echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+        echo "JWT_SECRET_KEY=${JWT_SECRET_KEY}" >> $GITHUB_ENV
 
+    - name: Build with Gradle using SSM values
+      run: |
+        echo "Building with secrets..."
+        ./gradlew build -x test \
+          -Dspring.datasource.url=$DB_URL \
+          -Dspring.datasource.username=$DB_USERNAME \
+          -Dspring.datasource.password=$DB_PASSWORD \
+          -Djwt.secret=$JWT_SECRET_KEY
+      
     # 빌드가 끝난 후 JAR 파일이 존재하는지 확인하는 단계
     - name: Check if JAR file exists
       run: |

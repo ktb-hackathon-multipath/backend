@@ -100,16 +100,14 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
         set -e
-
         echo "Uploading JAR file to EC2..."
-        scp -i /path/to/private/key build/libs/multipath-backend.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/ec2-user/multipath-backend.jar
+        scp build/libs/multipath-backend.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/ec2-user/multipath-backend.jar
 
         echo "Stopping existing application..."
         pkill -f 'java -jar' || true
 
         echo "Starting new application..."
         nohup java -jar /home/ec2-user/multipath-backend.jar \
-          --spring.profiles.active=dev \
           --DB_URL=${DB_URL} \
           --DB_USERNAME=${DB_USERNAME} \
           --DB_PASSWORD=${DB_PASSWORD} \

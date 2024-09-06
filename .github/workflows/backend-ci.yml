@@ -45,6 +45,17 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build -x test
+
+    # 빌드가 끝난 후 JAR 파일이 존재하는지 확인하는 단계
+    - name: Check if JAR file exists
+      run: |
+        if [ -f build/libs/multipath-backend.jar ]; then
+          echo "JAR file exists."
+        else
+          echo "JAR file does not exist."
+          exit 1
+        fi
+        
       
     - name: Add SSH key
       uses: webfactory/ssh-agent@v0.7.0
@@ -65,7 +76,7 @@ jobs:
       run: |
         echo "Retrieving secrets from AWS SSM Parameter Store..."
     
-        # SSM Parameter Store에서 보안 정보 가져오기 (보안 정보는 직접 출력되지 않음)
+        # SSM Parameter Store에서 보안 정보 가져오기 
         DB_URL=$(aws ssm get-parameter --name "/multipath/DB_URL" --query "Parameter.Value" --output text)
         DB_USERNAME=$(aws ssm get-parameter --name "/multipath/DB_USERNAME" --query "Parameter.Value" --output text)
         DB_PASSWORD=$(aws ssm get-parameter --name "/multipath/DB_PASSWORD" --with-decryption --query "Parameter.Value" --output text)

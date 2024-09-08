@@ -23,6 +23,9 @@ public record GameTypeResponse(
         @Schema(description = "게임의 시대 배경", example = "조선시대")
         String era,
 
+        @Schema(description = "게임 메인 이미지", example = "url")
+        String image,
+
         @Schema(description = "List of Empathy Buttons associated with this Game Type")
         List<EmpathyButtonResponse> empathyButtons
 

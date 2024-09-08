@@ -18,6 +18,9 @@ public record GameTypeRequest(
         @Schema(description = "테마 시대배경", example = "조선시대")
         String era,
 
+        @Schema(description = "게임 메인 이미지", example = "url")
+        String image,
+
         @Schema(description = "공감 버튼 목록", example = "[{buttonType: 'fun', clickCount: 0}, {buttonType: 'great', clickCount: 0}]")
         List<EmpathyButtonRequest> empathyButtons
 ) {}

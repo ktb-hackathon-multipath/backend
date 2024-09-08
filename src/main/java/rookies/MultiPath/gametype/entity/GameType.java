@@ -28,23 +28,28 @@ public class GameType {
     @Column
     private String era;
 
+    @Column
+    private String image;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "game_type_id")  // foreign key로 사용될 column
     private List<EmpathyButton> empathyButtons;
 
     @Builder
-    public GameType(String title, String person, String era, List<EmpathyButton> empathyButtons) {
+    public GameType(String title, String person, String era, String image, List<EmpathyButton> empathyButtons) {
         this.title = title;
         this.person = person;
         this.era = era;
+        this.image = image;
         this.empathyButtons = empathyButtons;
     }
 
-    public static GameType createGameType(String title, String person, String era, List<EmpathyButton> empathyButtons) {
+    public static GameType createGameType(String title, String person, String era, String image, List<EmpathyButton> empathyButtons) {
         return GameType.builder()
                 .title(title)
                 .person(person)
                 .era(era)
+                .image(image)
                 .empathyButtons(empathyButtons)
                 .build();
     }
